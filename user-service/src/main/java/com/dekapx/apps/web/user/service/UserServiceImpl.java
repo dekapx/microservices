@@ -18,4 +18,14 @@ public class UserServiceImpl implements UserService {
                 .email("dekapx@google.com")
                 .build());
     }
+
+    @Override
+    public UserDto getUser(final Long id) {
+        return UserDto.builder()
+                .firstName("De")
+                .lastName("Kapx")
+                .username("dekapx")
+                .email("dekapx@google.com")
+                .build();
+    }
 }

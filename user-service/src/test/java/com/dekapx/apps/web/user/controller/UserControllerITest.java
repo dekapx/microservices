@@ -28,7 +28,7 @@ public class UserControllerITest {
     private UserService userService;
 
     @Test
-    public void shouldReturnUsers() throws Exception {
+    public void shouldReturnAllUsers() throws Exception {
         when(userService.getUsers()).thenReturn(usersSupplier.get());
         this.mockMvc.perform(get("/api/users")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -40,12 +40,26 @@ public class UserControllerITest {
                 .andExpect(jsonPath("$[0].email", is("dekapx@google.com")));
     }
 
-    private Supplier<List<UserDto>> usersSupplier = () ->
-            List.of(UserDto.builder()
-                    .firstName("De")
-                    .lastName("Kapx")
-                    .username("dekapx")
-                    .email("dekapx@google.com")
-                    .build());
+    @Test
+    public void shouldReturnUserById() throws Exception {
+        when(userService.getUser(1L)).thenReturn(getUser());
+        this.mockMvc.perform(get("/api/users/{id}", 1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName", is("De")))
+                .andExpect(jsonPath("$.lastName", is("Kapx")))
+                .andExpect(jsonPath("$.username", is("dekapx")))
+                .andExpect(jsonPath("$.email", is("dekapx@google.com")));
+    }
 
+    private Supplier<List<UserDto>> usersSupplier = () -> List.of(getUser());
+
+    private UserDto getUser() {
+        return UserDto.builder()
+                .firstName("De")
+                .lastName("Kapx")
+                .username("dekapx")
+                .email("dekapx@google.com")
+                .build();
+    }
 }
