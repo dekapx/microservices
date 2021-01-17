@@ -1,4 +1,4 @@
-package com.dekapx.apps.web.controller;
+package com.dekapx.apps.web.core.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,7 +15,7 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 public class PingController {
     @GetMapping(value = "/ping", produces = "application/json")
     public String ping() {
-        log.info("PingController.ping() method invoked...");
+        log.debug("PingController.ping() method invoked...");
         return "Ping ! This URL is active...";
     }
 

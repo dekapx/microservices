@@ -1,4 +1,4 @@
-package com.dekapx.apps.web.controller;
+package com.dekapx.apps.web.core.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PingControllerTest {
+public class PingControllerITest {
     @Autowired
     private MockMvc mockMvc;
 
