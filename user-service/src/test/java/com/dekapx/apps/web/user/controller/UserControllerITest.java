@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,7 +29,7 @@ public class UserControllerITest {
 
     @Test
     public void shouldReturnAllUsers() throws Exception {
-        when(userService.getUsers()).thenReturn(usersSupplier.get());
+        given(userService.getUsers()).willReturn(usersSupplier.get());
         this.mockMvc.perform(get("/api/users")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -42,7 +42,7 @@ public class UserControllerITest {
 
     @Test
     public void shouldReturnUserById() throws Exception {
-        when(userService.getUser(1L)).thenReturn(getUser());
+        given(userService.getUser(1L)).willReturn(getUser());
         this.mockMvc.perform(get("/api/users/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
