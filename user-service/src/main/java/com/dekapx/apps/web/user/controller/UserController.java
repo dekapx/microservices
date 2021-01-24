@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -42,7 +43,7 @@ public class UserController {
     @PostMapping(value = "/users/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDto> create(@RequestBody UserDto userRequest) {
+    public ResponseEntity<UserDto> create(@Valid @RequestBody UserDto userRequest) {
         log.debug("Create user...");
         final UserDto userResponse = this.userService.create(userRequest);
         return new ResponseEntity<UserDto>(userResponse, HttpStatus.OK);
