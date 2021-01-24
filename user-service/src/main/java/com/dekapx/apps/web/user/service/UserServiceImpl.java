@@ -22,10 +22,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUser(final Long id) {
         return UserDto.builder()
-                .firstName("De")
-                .lastName("Kapx")
-                .username("dekapx")
-                .email("dekapx@google.com")
+                .firstName("Dummy")
+                .lastName("User")
+                .username("dummyuser")
+                .email("dummy.user@google.com")
                 .build();
+    }
+
+    @Override
+    public UserDto save(final UserDto userDto) {
+        return UserDto.builder()
+                .firstName("Dummy")
+                .lastName("User")
+                .username("dummyuser")
+                .email("dummy.user@google.com")
+                .build();
+    }
+
+    @Override
+    public UserDto create(final UserDto userDto) {
+        return userDto;
+    }
+
+    @Override
+    public UserDto update(UserDto userDto) {
+        return userDto;
     }
 }
