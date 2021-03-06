@@ -1,7 +1,7 @@
-package com.dekapx.apps.web.user.controller;
+package com.dekapx.apps.user.controller;
 
-import com.dekapx.apps.web.user.model.UserDto;
-import com.dekapx.apps.web.user.service.UserService;
+import com.dekapx.apps.user.common.model.UserDto;
+import com.dekapx.apps.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

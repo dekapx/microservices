@@ -1,4 +1,4 @@
-package com.dekapx.apps.web.user.model;
+package com.dekapx.apps.user.common.model;
 
 import lombok.Builder;
 import lombok.Value;

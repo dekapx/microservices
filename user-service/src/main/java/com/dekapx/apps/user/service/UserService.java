@@ -1,6 +1,6 @@
-package com.dekapx.apps.web.user.service;
+package com.dekapx.apps.user.service;
 
-import com.dekapx.apps.web.user.model.UserDto;
+import com.dekapx.apps.user.common.model.UserDto;
 
 import java.util.List;
 
