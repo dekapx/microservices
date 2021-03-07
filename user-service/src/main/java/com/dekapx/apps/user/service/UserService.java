@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface UserService {
     List<UserDto> getUsers();
+
     UserDto getUser(Long id);
 
     UserDto create(UserDto userDto);
