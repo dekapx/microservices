@@ -11,9 +11,11 @@ import javax.validation.constraints.Size;
 @Builder
 public class UserDto {
     @NotNull(message = "First Name cannot be null")
+    @Size(min = 2, max = 20, message = "First Name must be between 6 and 20 characters")
     private String firstName;
 
     @NotNull(message = "Last Name cannot be null")
+    @Size(min = 2, max = 20, message = "Last Name must be between 6 and 20 characters")
     private String lastName;
 
     @NotNull(message = "Username cannot be null")
