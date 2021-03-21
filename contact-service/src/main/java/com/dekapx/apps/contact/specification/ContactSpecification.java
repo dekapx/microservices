@@ -9,6 +9,8 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Optional;
+
 public class ContactSpecification implements Specification<Contact> {
     private Contact contact;
 
@@ -21,13 +23,14 @@ public class ContactSpecification implements Specification<Contact> {
     public Predicate toPredicate(final Root<Contact> root, final CriteriaQuery<?> query, final CriteriaBuilder builder) {
         final Predicate predicate = builder.disjunction();
 
-        if (contact.getFirstName() != null) {
-            predicate.getExpressions().add(builder.like(root.get("firstName"), "%" + contact.getFirstName() + "%"));
-        }
+        Optional.ofNullable(contact.getFirstName())
+                .ifPresent(firstName -> predicate.getExpressions()
+                        .add(builder.like(root.get("firstName"), "%" + firstName + "%")));
 
-        if (contact.getPhone() != null) {
-            predicate.getExpressions().add(builder.like(root.get("phone"), "%" + contact.getPhone() + "%"));
-        }
+        Optional.ofNullable(contact.getPhone())
+                .ifPresent(phone -> predicate.getExpressions()
+                        .add(builder.like(root.get("phone"), "%" + phone + "%")));
+
         return predicate;
     }
 }
