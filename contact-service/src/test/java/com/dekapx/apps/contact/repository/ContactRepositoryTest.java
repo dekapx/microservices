@@ -1,12 +1,15 @@
 package com.dekapx.apps.contact.repository;
 
 import com.dekapx.apps.contact.domain.Contact;
+import com.dekapx.apps.contact.specification.ContactSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -48,7 +51,7 @@ public class ContactRepositoryTest {
     }
 
     private void updateAndVerify() {
-        final Contact contact = findContact.get();
+        final Contact contact = findContactBySpecification();
         contact.setEmail(MODIFIED_EMAIL);
 
         final Contact contactModified = this.repository.save(contact);
@@ -62,11 +65,16 @@ public class ContactRepositoryTest {
     }
 
     private void cleanUp() {
-        this.repository.delete(findContact.get());
+        this.repository.delete(findContactBySpecification());
     }
 
-    private Supplier<Contact> findContact = () ->
-            this.repository.findByFirstName(FIRST_NAME);
+    private Contact findContactBySpecification() {
+        final Contact contact = new Contact();
+        contact.setFirstName(FIRST_NAME);
+        final Specification<Contact> specification = new ContactSpecification(contact);
+        final Optional<Contact> contactOptional = this.repository.findOne(specification);
+        return contactOptional.get();
+    }
 
     private Supplier<Contact> contactSupplier = () -> {
         Contact contact = new Contact();
