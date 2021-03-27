@@ -1,6 +1,5 @@
 package com.dekapx.apps.contact.service;
 
-import com.dekapx.apps.contact.domain.Contact;
 import com.dekapx.apps.contact.mapper.ContactMapper;
 import com.dekapx.apps.contact.model.ContactDto;
 import com.dekapx.apps.contact.repository.ContactRepository;
@@ -9,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
