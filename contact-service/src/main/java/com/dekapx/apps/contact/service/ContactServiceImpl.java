@@ -27,14 +27,14 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public void save(final ContactDto dto) {
-        final Contact contact = this.repository.save(this.mapper.toContact(dto));
+        final var contact = this.repository.save(this.mapper.toContact(dto));
         log.debug("Contact created with ID [{}]", contact.getId());
     }
 
     @Override
     public ContactDto findById(final Long id) {
-        final Optional<Contact> contactOptional = this.repository.findById(id);
-        final Contact contact = contactOptional.orElseThrow(
+        final var contactOptional = this.repository.findById(id);
+        final var contact = contactOptional.orElseThrow(
                 () -> new ResourceNotFoundException(String.format("Contact with ID [%d] not found.", id)));
         return this.mapper.toContactDto(contact);
     }

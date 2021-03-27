@@ -22,6 +22,7 @@
         <mockito-core.version>3.8.0</mockito-core.version>
         <mockito-junit-jupiter.version>3.8.0</mockito-junit-jupiter.version>
         <assertj.version>3.19.0</assertj.version>
+        <springdoc-openapi.version>1.5.6</springdoc-openapi.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     </properties>
 
@@ -44,6 +45,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc-openapi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
