@@ -26,8 +26,7 @@ public class RestControllerAdvice {
     public ResponseEntity<ApiErrorResponse> resourceAlreadyExistsException(ResourceAlreadyExistsException exception) {
         final var apiErrorResponse = ApiErrorResponse.builder()
                 .errorMessage(exception.getMessage())
-                .status("CONFLICT" +
-                        "")
+                .status("CONFLICT")
                 .timestamp(LocalDateTime.now())
                 .build();
 
