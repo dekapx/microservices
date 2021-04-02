@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-public class ContactServiceTest {
+public class ContactServiceIT {
     private static final String FIRST_NAME = "Test";
     private static final String LAST_NAME = "User";
     private static final String EMAIL = "testuser@google.com";
@@ -52,14 +52,14 @@ public class ContactServiceTest {
         final ContactDto contact = findContactBySpecification();
         contact.setEmail(MODIFIED_EMAIL);
 
-        this.contactService.update(contact);
-//        assertAll(
-//                () -> assertNotNull(contactModified),
-//                () -> assertEquals(FIRST_NAME, contact.getFirstName()),
-//                () -> assertEquals(LAST_NAME, contact.getLastName()),
-//                () -> assertEquals(MODIFIED_EMAIL, contact.getEmail()),
-//                () -> assertEquals(PHONE, contact.getPhone())
-//        );
+        final ContactDto contactModified = this.contactService.update(contact);
+        assertAll(
+                () -> assertNotNull(contactModified),
+                () -> assertEquals(FIRST_NAME, contact.getFirstName()),
+                () -> assertEquals(LAST_NAME, contact.getLastName()),
+                () -> assertEquals(MODIFIED_EMAIL, contact.getEmail()),
+                () -> assertEquals(PHONE, contact.getPhone())
+        );
     }
 
     private void cleanUp() {
@@ -72,20 +72,6 @@ public class ContactServiceTest {
         contact.setFirstName(FIRST_NAME);
         final Specification<Contact> specification = new ContactSpecification(contact);
         return this.contactService.findBySpecification(specification);
-    }
-
-    @Disabled
-    @Test
-    @DisplayName("Find contact by ID")
-    public void givenValidContactIdReturnContact() {
-        ContactDto contactDto = this.contactService.findById(29L);
-        assertAll(
-                () -> assertNotNull(contactDto),
-                () -> assertEquals(FIRST_NAME, contactDto.getFirstName()),
-                () -> assertEquals(LAST_NAME, contactDto.getLastName()),
-                () -> assertEquals(EMAIL, contactDto.getEmail()),
-                () -> assertEquals(PHONE, contactDto.getPhone())
-        );
     }
 
     @Test
