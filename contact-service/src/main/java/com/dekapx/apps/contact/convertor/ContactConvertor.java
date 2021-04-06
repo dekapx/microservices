@@ -27,4 +27,12 @@ public class ContactConvertor implements Convertor<Contact, ContactDto> {
                 .phone(entity.getPhone())
                 .build();
     }
+
+    @Override
+    public void copyProperties(final Contact entity, final ContactDto dto) {
+        entity.setFirstName(dto.getFirstName());
+        entity.setLastName(dto.getLastName());
+        entity.setEmail(dto.getEmail());
+        entity.setPhone(dto.getPhone());
+    }
 }

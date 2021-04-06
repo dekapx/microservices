@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -38,11 +39,15 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public ContactDto findById(final Long id) {
-        final var contactOptional = this.repository.findById(id);
-        final var contact = contactOptional.orElseThrow(
-                () -> new ResourceNotFoundException(String.format("Contact with ID [%d] not found.", id)));
+        final var contact = findByIdFunction.apply(id);
         return this.convertor.toDto(contact);
     }
+
+    private Function<Long, Contact> findByIdFunction = (id) -> {
+        final var contactOptional = this.repository.findById(id);
+        return contactOptional.orElseThrow(
+                () -> new ResourceNotFoundException(String.format("Contact with ID [%d] not found.", id)));
+    };
 
     @Override
     public ContactDto findBySpecification(final Specification<Contact> specification) {
@@ -65,7 +70,8 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public ContactDto update(final ContactDto dto) {
-        final var contact = this.convertor.toEntity(dto);
+        final var contact = findByIdFunction.apply(dto.getId());
+        this.convertor.copyProperties(contact, dto);
         final var contactUpdated = this.repository.save(contact);
         log.debug("Contact updated with ID [{}]", contactUpdated.getId());
         return this.convertor.toDto(contactUpdated);
