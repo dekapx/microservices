@@ -3,25 +3,28 @@ package com.dekapx.apps.contact.convertor;
 import com.dekapx.apps.contact.domain.Contact;
 import com.dekapx.apps.contact.model.ContactDto;
 import com.dekapx.apps.core.convertor.Convertor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("contactConvertor")
 public class ContactConvertor implements Convertor<Contact, ContactDto> {
-    private final ContactMapper mapper;
-
-    @Autowired
-    public ContactConvertor(final ContactMapper mapper) {
-        this.mapper = mapper;
-    }
-
     @Override
     public Contact toEntity(final ContactDto dto) {
-        return this.mapper.toContact(dto);
+        final Contact contact = new Contact();
+        contact.setFirstName(dto.getFirstName());
+        contact.setLastName(dto.getLastName());
+        contact.setEmail(dto.getEmail());
+        contact.setPhone(dto.getPhone());
+        return contact;
     }
 
     @Override
     public ContactDto toDto(final Contact entity) {
-        return this.mapper.toContactDto(entity);
+        return ContactDto.builder()
+                .id(entity.getId())
+                .firstName(entity.getFirstName())
+                .lastName(entity.getLastName())
+                .email(entity.getEmail())
+                .phone(entity.getPhone())
+                .build();
     }
 }

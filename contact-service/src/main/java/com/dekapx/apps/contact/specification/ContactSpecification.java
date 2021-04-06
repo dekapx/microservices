@@ -1,14 +1,12 @@
 package com.dekapx.apps.contact.specification;
 
 import com.dekapx.apps.contact.domain.Contact;
+import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.springframework.data.jpa.domain.Specification;
-
 import java.util.Optional;
 
 public class ContactSpecification implements Specification<Contact> {
@@ -26,11 +24,12 @@ public class ContactSpecification implements Specification<Contact> {
         Optional.ofNullable(contact.getFirstName())
                 .ifPresent(firstName -> predicate.getExpressions()
                         .add(builder.like(root.get("firstName"), "%" + firstName + "%")));
-
-        Optional.ofNullable(contact.getPhone())
-                .ifPresent(phone -> predicate.getExpressions()
-                        .add(builder.like(root.get("phone"), "%" + phone + "%")));
-
+        Optional.ofNullable(contact.getLastName())
+                .ifPresent(lastName -> predicate.getExpressions()
+                        .add(builder.like(root.get("lastName"), "%" + lastName + "%")));
+        Optional.ofNullable(contact.getEmail())
+                .ifPresent(email -> predicate.getExpressions()
+                        .add(builder.like(root.get("email"), "%" + email + "%")));
         return predicate;
     }
 }

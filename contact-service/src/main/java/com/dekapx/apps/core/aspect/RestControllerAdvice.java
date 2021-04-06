@@ -43,5 +43,4 @@ public class RestControllerAdvice {
                     .status(status)
                     .timestamp(LocalDateTime.now())
                     .build();
-
 }
