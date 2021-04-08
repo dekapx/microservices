@@ -1,6 +1,5 @@
 package com.dekapx.apps.contact.controller;
 
-import com.dekapx.apps.contact.domain.Contact;
 import com.dekapx.apps.contact.model.ContactDto;
 import com.dekapx.apps.contact.service.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -29,17 +29,37 @@ public class ContactController {
     @Autowired
     private ContactService contactService;
 
-    @Operation(summary = "Get a Contact by id")
+    @Operation(summary = "Find Contact by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found the User",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ContactDto.class))}),
-            @ApiResponse(responseCode = "404", description = "Contact with ID [x] not found.", content = @Content)})
+            @ApiResponse(responseCode = "200", description = "Found the Contact",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ContactDto.class))
+                    }),
+            @ApiResponse(responseCode = "404", description = "Contact with ID [x] not found.", content = @Content)
+    })
     @GetMapping(value = "/contact/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ContactDto> getContact(@PathVariable Long id) {
+    public ResponseEntity<ContactDto> findContactById(@PathVariable Long id) {
         log.debug("Find Contact for ID [{}]", id);
-        final var userDto = this.contactService.findById(id);
-        return new ResponseEntity<ContactDto>(userDto, HttpStatus.OK);
+        final var contact = this.contactService.findById(id);
+        return new ResponseEntity<ContactDto>(contact, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Find Contacts")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the Contacts",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ContactDto.class))
+                    }),
+            @ApiResponse(responseCode = "204", description = "No Content.", content = @Content)
+    })
+    @GetMapping(value = "/contacts",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ContactDto>> findAll() {
+        log.debug("Find all contacts");
+        final var contacts = this.contactService.findAll();
+        if (contacts.isEmpty()) {
+            return new ResponseEntity<>(contacts, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<List<ContactDto>>(contacts, HttpStatus.OK);
     }
 
     @Operation(summary = "Create New contact", tags = {"contact"})

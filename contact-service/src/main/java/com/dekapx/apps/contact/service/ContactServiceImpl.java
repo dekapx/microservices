@@ -19,9 +19,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,6 +43,14 @@ public class ContactServiceImpl implements ContactService {
     public ContactDto findById(final Long id) {
         final var contact = findByIdFunction.apply(id);
         return this.convertor.toDto(contact);
+    }
+
+    @Override
+    public List<ContactDto> findAll() {
+        final List<ContactDto> contacts = new ArrayList<>();
+        this.repository.findAll()
+                .forEach(contact -> contacts.add(this.convertor.toDto(contact)));
+        return contacts;
     }
 
     private Function<Long, Contact> findByIdFunction = (id) -> {
@@ -110,7 +120,7 @@ public class ContactServiceImpl implements ContactService {
         final Changes changes = this.javers.findChanges(QueryBuilder.byInstance(contact)
                 .withChildValueObjects(true)
                 .build());
-        log.info(changes.prettyPrint());
+        log.debug(changes.prettyPrint());
         return changes;
     }
 
@@ -120,7 +130,7 @@ public class ContactServiceImpl implements ContactService {
                 .findChanges(QueryBuilder.byClass(Contact.class)
                         .withChildValueObjects()
                         .build());
-        log.info(changes.prettyPrint());
+        log.debug(changes.prettyPrint());
         return changes;
     }
 }

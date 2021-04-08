@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface ContactService {
     ContactDto findById(Long id);
+    List<ContactDto> findAll();
     ContactDto findBySpecification(Specification<Contact> specification);
     ContactDto save(ContactDto dto);
     ContactDto update(ContactDto dto);
