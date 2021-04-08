@@ -4,25 +4,19 @@ import com.dekapx.apps.contact.domain.Contact;
 import com.dekapx.apps.contact.model.ContactModel;
 import com.dekapx.apps.contact.repository.ContactRepository;
 import com.dekapx.apps.contact.specification.ContactSpecification;
-import com.dekapx.apps.core.mapper.Mapper;
 import com.dekapx.apps.core.exception.ResourceAlreadyExistsException;
 import com.dekapx.apps.core.exception.ResourceNotFoundException;
+import com.dekapx.apps.core.mapper.Mapper;
 import com.dekapx.apps.core.mapper.MapperFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.javers.core.Changes;
 import org.javers.core.Javers;
-import org.javers.core.metamodel.object.CdoSnapshot;
-import org.javers.repository.jql.QueryBuilder;
-import org.javers.shadow.Shadow;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
@@ -97,42 +91,5 @@ public class ContactServiceImpl implements ContactService {
                 -> new ResourceNotFoundException(String.format("Contact with ID [%d] not found.", id)));
         this.repository.delete(contact);
         log.debug("Contact with ID [{}}] is deleted successfully... ", id);
-    }
-
-    @Override
-    public List<Shadow<Contact>> findShadows(final ContactModel contactDto) {
-        final Optional<Contact> optional = this.repository.findById(contactDto.getId());
-        final Contact contact = optional.orElseThrow(()
-                -> new ResourceNotFoundException(String.format("Contact with ID [{}] not found...", contactDto.getId())));
-        return this.javers.findShadows(QueryBuilder.byInstance(contact).build());
-    }
-
-    @Override
-    public List<CdoSnapshot> findSnapshots(final ContactModel contactDto) {
-        final Optional<Contact> optional = this.repository.findById(contactDto.getId());
-        final Contact contact = optional.orElseThrow(()
-                -> new ResourceNotFoundException(String.format("Contact with ID [{}] not found...", contactDto.getId())));
-        return this.javers.findSnapshots(QueryBuilder.byInstance(contact).build());
-    }
-
-    @Override
-    public Changes findChanges(final ContactModel contactDto) {
-        final Optional<Contact> optional = this.repository.findById(contactDto.getId());
-        final Contact contact = optional.orElseThrow(()
-                -> new ResourceNotFoundException(String.format("Contact with ID [{}] not found...", contactDto.getId())));
-        final Changes changes = this.javers.findChanges(QueryBuilder.byInstance(contact)
-                .withChildValueObjects(true)
-                .build());
-        log.debug(changes.prettyPrint());
-        return changes;
-    }
-
-    @Override
-    public Changes findChanges() {
-        final Changes changes = this.javers.findChanges(QueryBuilder.byClass(Contact.class)
-                .withChildValueObjects()
-                .build());
-        log.debug(changes.prettyPrint());
-        return changes;
     }
 }

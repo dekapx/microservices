@@ -4,20 +4,14 @@ import com.dekapx.apps.contact.domain.Contact;
 import com.dekapx.apps.contact.model.ContactModel;
 import com.dekapx.apps.contact.specification.ContactSpecification;
 import com.dekapx.apps.core.exception.ResourceNotFoundException;
-import org.javers.core.Changes;
-import org.javers.core.metamodel.object.CdoSnapshot;
-import org.javers.shadow.Shadow;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -39,7 +33,6 @@ public class ContactServiceIT {
     public void createUpdateAndDelete() {
         createAndVerify();
         updateAndVerify();
-        findAudit();
         cleanUp();
     }
 
@@ -88,19 +81,6 @@ public class ContactServiceIT {
         });
         assertAll(() -> assertEquals("Contact with ID [1] not found.", exception.getMessage()));
     }
-
-    private void findAudit() {
-        ContactModel model = findContactBySpecification();
-
-        List<Shadow<Contact>> shadows = this.contactService.findShadows(model);
-        assertThat(shadows).isNotNull();
-
-        List<CdoSnapshot> snapshots = this.contactService.findSnapshots(model);
-        assertThat(snapshots).isNotNull();
-
-        Changes changes = this.contactService.findChanges();
-        assertThat(changes).isNotNull();
-    };
 
     private Supplier<ContactModel> contactSupplier = () ->
             ContactModel.builder()
