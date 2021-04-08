@@ -43,17 +43,17 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public ContactModel findById(final Long id) {
-        final var contact = findByIdFunction.apply(id);
-        return this.mapper.toModel(contact);
-    }
-
-    @Override
     public List<ContactModel> findAll() {
         final List<ContactModel> contacts = new ArrayList<>();
         this.repository.findAll()
                 .forEach(contact -> contacts.add(this.mapper.toModel(contact)));
         return contacts;
+    }
+
+    @Override
+    public ContactModel findById(final Long id) {
+        final var contact = findByIdFunction.apply(id);
+        return this.mapper.toModel(contact);
     }
 
     private Function<Long, Contact> findByIdFunction = (id) -> {
@@ -71,8 +71,8 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public ContactModel save(final ContactModel dto) {
-        var contact = this.mapper.toEntity(dto);
+    public ContactModel save(final ContactModel model) {
+        var contact = this.mapper.toEntity(model);
         if (this.repository.findOne(new ContactSpecification(contact)).isPresent()) {
             throw new ResourceAlreadyExistsException("Contact already exists...");
         }
@@ -82,9 +82,9 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public ContactModel update(final ContactModel dto) {
-        final var contact = findByIdFunction.apply(dto.getId());
-        this.mapper.copyProperties(contact, dto);
+    public ContactModel update(final ContactModel model) {
+        final var contact = findByIdFunction.apply(model.getId());
+        this.mapper.copyProperties(contact, model);
         final var contactUpdated = this.repository.save(contact);
         log.debug("Contact updated with ID [{}]", contactUpdated.getId());
         return this.mapper.toModel(contactUpdated);
