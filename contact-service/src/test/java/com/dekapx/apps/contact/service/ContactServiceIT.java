@@ -23,13 +23,13 @@ public class ContactServiceIT {
     private static final String LAST_NAME = "User";
     private static final String EMAIL = "testuser@google.com";
     private static final String MODIFIED_EMAIL = "testuser@outlook.com";
-    private static final String PHONE = "+1 123 456 7890";
+    private static final String PHONE = "+1 (123) 456 7890";
 
     @Autowired
     private ContactService contactService;
 
     @Test
-    @DisplayName("Create Update & Delete Contact")
+    @DisplayName("ContactService CRUD")
     public void createUpdateAndDelete() {
         createAndVerify();
         updateAndVerify();
@@ -37,7 +37,7 @@ public class ContactServiceIT {
     }
 
     private void createAndVerify() {
-        final ContactModel contact = this.contactService.save(contactSupplier.get());
+        final var contact = this.contactService.save(contactSupplier.get());
         assertAll(
                 () -> assertNotNull(contact),
                 () -> assertEquals(FIRST_NAME, contact.getFirstName()),
@@ -48,10 +48,10 @@ public class ContactServiceIT {
     }
 
     private void updateAndVerify() {
-        final ContactModel contact = findContactBySpecification();
+        final var contact = findContactBySpecification();
         contact.setEmail(MODIFIED_EMAIL);
 
-        final ContactModel contactModified = this.contactService.update(contact);
+        final var contactModified = this.contactService.update(contact);
         assertAll(
                 () -> assertNotNull(contactModified),
                 () -> assertEquals(FIRST_NAME, contact.getFirstName()),
@@ -62,12 +62,12 @@ public class ContactServiceIT {
     }
 
     private void cleanUp() {
-        final ContactModel contact = findContactBySpecification();
+        final var contact = findContactBySpecification();
         this.contactService.delete(contact.getId());
     }
 
     private ContactModel findContactBySpecification() {
-        final Contact contact = new Contact();
+        final var contact = new Contact();
         contact.setFirstName(FIRST_NAME);
         final Specification<Contact> specification = new ContactSpecification(contact);
         return this.contactService.findBySpecification(specification);
@@ -76,7 +76,7 @@ public class ContactServiceIT {
     @Test
     @DisplayName("Find Contact by ID Throw Exception")
     public void givenInvalidContactIdThrowException() {
-        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+        final var exception = assertThrows(ResourceNotFoundException.class, () -> {
             this.contactService.findById(1L);
         });
         assertAll(() -> assertEquals("Contact with ID [1] not found.", exception.getMessage()));
