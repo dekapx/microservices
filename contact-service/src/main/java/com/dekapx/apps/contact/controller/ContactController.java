@@ -1,6 +1,6 @@
 package com.dekapx.apps.contact.controller;
 
-import com.dekapx.apps.contact.model.ContactDto;
+import com.dekapx.apps.contact.model.ContactModel;
 import com.dekapx.apps.contact.service.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,47 +32,47 @@ public class ContactController {
     @Operation(summary = "Find Contact by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the Contact",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ContactDto.class))
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ContactModel.class))
                     }),
             @ApiResponse(responseCode = "404", description = "Contact with ID [x] not found.", content = @Content)
     })
     @GetMapping(value = "/contact/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ContactDto> findContactById(@PathVariable Long id) {
+    public ResponseEntity<ContactModel> findContactById(@PathVariable Long id) {
         log.debug("Find Contact for ID [{}]", id);
         final var contact = this.contactService.findById(id);
-        return new ResponseEntity<ContactDto>(contact, HttpStatus.OK);
+        return new ResponseEntity<ContactModel>(contact, HttpStatus.OK);
     }
 
     @Operation(summary = "Find Contacts")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the Contacts",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ContactDto.class))
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ContactModel.class))
                     }),
             @ApiResponse(responseCode = "204", description = "No Content.", content = @Content)
     })
     @GetMapping(value = "/contacts",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ContactDto>> findAll() {
+    public ResponseEntity<List<ContactModel>> findAll() {
         log.debug("Find all contacts");
         final var contacts = this.contactService.findAll();
         if (contacts.isEmpty()) {
             return new ResponseEntity<>(contacts, HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<List<ContactDto>>(contacts, HttpStatus.OK);
+        return new ResponseEntity<List<ContactModel>>(contacts, HttpStatus.OK);
     }
 
     @Operation(summary = "Create New contact", tags = {"contact"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "New Contact created",
-                    content = @Content(schema = @Schema(implementation = ContactDto.class))),
+                    content = @Content(schema = @Schema(implementation = ContactModel.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "409", description = "Contact already exists")})
     @PostMapping(value = "/contact/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ContactDto> create(@Valid @RequestBody ContactDto contactDto) {
+    public ResponseEntity<ContactModel> create(@Valid @RequestBody ContactModel contactDto) {
         log.debug("Create new contact...");
-        return new ResponseEntity<ContactDto>(this.contactService.save(contactDto), HttpStatus.OK);
+        return new ResponseEntity<ContactModel>(this.contactService.save(contactDto), HttpStatus.OK);
     }
 }

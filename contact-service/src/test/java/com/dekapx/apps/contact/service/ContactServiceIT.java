@@ -1,10 +1,9 @@
 package com.dekapx.apps.contact.service;
 
 import com.dekapx.apps.contact.domain.Contact;
-import com.dekapx.apps.contact.model.ContactDto;
+import com.dekapx.apps.contact.model.ContactModel;
 import com.dekapx.apps.contact.specification.ContactSpecification;
 import com.dekapx.apps.core.exception.ResourceNotFoundException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ public class ContactServiceIT {
     }
 
     private void createAndVerify() {
-        final ContactDto contact = this.contactService.save(contactSupplier.get());
+        final ContactModel contact = this.contactService.save(contactSupplier.get());
         assertAll(
                 () -> assertNotNull(contact),
                 () -> assertEquals(FIRST_NAME, contact.getFirstName()),
@@ -49,10 +48,10 @@ public class ContactServiceIT {
     }
 
     private void updateAndVerify() {
-        final ContactDto contact = findContactBySpecification();
+        final ContactModel contact = findContactBySpecification();
         contact.setEmail(MODIFIED_EMAIL);
 
-        final ContactDto contactModified = this.contactService.update(contact);
+        final ContactModel contactModified = this.contactService.update(contact);
         assertAll(
                 () -> assertNotNull(contactModified),
                 () -> assertEquals(FIRST_NAME, contact.getFirstName()),
@@ -63,11 +62,11 @@ public class ContactServiceIT {
     }
 
     private void cleanUp() {
-        final ContactDto contact = findContactBySpecification();
+        final ContactModel contact = findContactBySpecification();
         this.contactService.delete(contact.getId());
     }
 
-    private ContactDto findContactBySpecification() {
+    private ContactModel findContactBySpecification() {
         final Contact contact = new Contact();
         contact.setFirstName(FIRST_NAME);
         final Specification<Contact> specification = new ContactSpecification(contact);
@@ -83,8 +82,8 @@ public class ContactServiceIT {
         assertAll(() -> assertEquals("Contact with ID [1] not found.", exception.getMessage()));
     }
 
-    private Supplier<ContactDto> contactSupplier = () ->
-            ContactDto.builder()
+    private Supplier<ContactModel> contactSupplier = () ->
+            ContactModel.builder()
                     .firstName(FIRST_NAME)
                     .lastName(LAST_NAME)
                     .email(EMAIL)

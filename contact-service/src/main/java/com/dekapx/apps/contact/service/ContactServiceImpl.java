@@ -1,12 +1,13 @@
 package com.dekapx.apps.contact.service;
 
 import com.dekapx.apps.contact.domain.Contact;
-import com.dekapx.apps.contact.model.ContactDto;
+import com.dekapx.apps.contact.model.ContactModel;
 import com.dekapx.apps.contact.repository.ContactRepository;
 import com.dekapx.apps.contact.specification.ContactSpecification;
-import com.dekapx.apps.core.convertor.Convertor;
+import com.dekapx.apps.core.mapper.Mapper;
 import com.dekapx.apps.core.exception.ResourceAlreadyExistsException;
 import com.dekapx.apps.core.exception.ResourceNotFoundException;
+import com.dekapx.apps.core.mapper.MapperFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.javers.core.Changes;
 import org.javers.core.Javers;
@@ -23,33 +24,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @Transactional
 public class ContactServiceImpl implements ContactService {
-    @Autowired
-    @Qualifier("contactConvertor")
-    private Convertor<Contact, ContactDto> convertor;
-
-    @Autowired
+    private MapperFactory mapperFactory;
     private ContactRepository repository;
+    private Javers javers;
+    private Mapper<Contact, ContactModel> mapper;
 
     @Autowired
-    private Javers javers;
-
-    @Override
-    public ContactDto findById(final Long id) {
-        final var contact = findByIdFunction.apply(id);
-        return this.convertor.toDto(contact);
+    public ContactServiceImpl(final MapperFactory mapperFactory, final ContactRepository repository, final Javers javers) {
+        this.mapperFactory = mapperFactory;
+        this.repository = repository;
+        this.javers = javers;
+        this.mapper = this.mapperFactory.getMapper(Contact.class);
     }
 
     @Override
-    public List<ContactDto> findAll() {
-        final List<ContactDto> contacts = new ArrayList<>();
+    public ContactModel findById(final Long id) {
+        final var contact = findByIdFunction.apply(id);
+        return this.mapper.toModel(contact);
+    }
+
+    @Override
+    public List<ContactModel> findAll() {
+        final List<ContactModel> contacts = new ArrayList<>();
         this.repository.findAll()
-                .forEach(contact -> contacts.add(this.convertor.toDto(contact)));
+                .forEach(contact -> contacts.add(this.mapper.toModel(contact)));
         return contacts;
     }
 
@@ -60,31 +63,31 @@ public class ContactServiceImpl implements ContactService {
     };
 
     @Override
-    public ContactDto findBySpecification(final Specification<Contact> specification) {
+    public ContactModel findBySpecification(final Specification<Contact> specification) {
         final var contactOptional = this.repository.findOne(specification);
         final var contact = contactOptional.orElseThrow(
                 () -> new ResourceNotFoundException("Contact not found for specification..."));
-        return this.convertor.toDto(contact);
+        return this.mapper.toModel(contact);
     }
 
     @Override
-    public ContactDto save(final ContactDto dto) {
-        var contact = this.convertor.toEntity(dto);
-        if(this.repository.findOne(new ContactSpecification(contact)).isPresent()){
+    public ContactModel save(final ContactModel dto) {
+        var contact = this.mapper.toEntity(dto);
+        if (this.repository.findOne(new ContactSpecification(contact)).isPresent()) {
             throw new ResourceAlreadyExistsException("Contact already exists...");
         }
         contact = this.repository.save(contact);
         log.debug("Contact created with ID [{}]", contact.getId());
-        return this.convertor.toDto(contact);
+        return this.mapper.toModel(contact);
     }
 
     @Override
-    public ContactDto update(final ContactDto dto) {
+    public ContactModel update(final ContactModel dto) {
         final var contact = findByIdFunction.apply(dto.getId());
-        this.convertor.copyProperties(contact, dto);
+        this.mapper.copyProperties(contact, dto);
         final var contactUpdated = this.repository.save(contact);
         log.debug("Contact updated with ID [{}]", contactUpdated.getId());
-        return this.convertor.toDto(contactUpdated);
+        return this.mapper.toModel(contactUpdated);
     }
 
     @Override
@@ -97,7 +100,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public List<Shadow<Contact>> findShadows(final ContactDto contactDto) {
+    public List<Shadow<Contact>> findShadows(final ContactModel contactDto) {
         final Optional<Contact> optional = this.repository.findById(contactDto.getId());
         final Contact contact = optional.orElseThrow(()
                 -> new ResourceNotFoundException(String.format("Contact with ID [{}] not found...", contactDto.getId())));
@@ -105,7 +108,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public List<CdoSnapshot> findSnapshots(final ContactDto contactDto) {
+    public List<CdoSnapshot> findSnapshots(final ContactModel contactDto) {
         final Optional<Contact> optional = this.repository.findById(contactDto.getId());
         final Contact contact = optional.orElseThrow(()
                 -> new ResourceNotFoundException(String.format("Contact with ID [{}] not found...", contactDto.getId())));
@@ -113,7 +116,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public Changes findChanges(final ContactDto contactDto) {
+    public Changes findChanges(final ContactModel contactDto) {
         final Optional<Contact> optional = this.repository.findById(contactDto.getId());
         final Contact contact = optional.orElseThrow(()
                 -> new ResourceNotFoundException(String.format("Contact with ID [{}] not found...", contactDto.getId())));
@@ -126,10 +129,9 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public Changes findChanges() {
-        final Changes changes = this.javers
-                .findChanges(QueryBuilder.byClass(Contact.class)
-                        .withChildValueObjects()
-                        .build());
+        final Changes changes = this.javers.findChanges(QueryBuilder.byClass(Contact.class)
+                .withChildValueObjects()
+                .build());
         log.debug(changes.prettyPrint());
         return changes;
     }
