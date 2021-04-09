@@ -4,6 +4,7 @@ import com.dekapx.apps.contact.domain.Contact;
 import com.dekapx.apps.contact.model.ContactModel;
 import com.dekapx.apps.contact.repository.ContactRepository;
 import com.dekapx.apps.contact.specification.ContactSpecification;
+import com.dekapx.apps.core.exception.NoContentException;
 import com.dekapx.apps.core.exception.ResourceAlreadyExistsException;
 import com.dekapx.apps.core.exception.ResourceNotFoundException;
 import com.dekapx.apps.core.mapper.Mapper;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
@@ -39,9 +41,9 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public List<ContactModel> findAll() {
         final List<ContactModel> contacts = new ArrayList<>();
-        this.repository.findAll()
-                .forEach(contact -> contacts.add(this.mapper.toModel(contact)));
-        return contacts;
+        this.repository.findAll().forEach(contact -> contacts.add(this.mapper.toModel(contact)));
+        return Optional.of(contacts).filter(c -> c.size() > 0)
+                .orElseThrow(() -> new NoContentException("No contents found..."));
     }
 
     @Override

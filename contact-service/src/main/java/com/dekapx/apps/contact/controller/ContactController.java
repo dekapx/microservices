@@ -56,9 +56,6 @@ public class ContactController {
     public ResponseEntity<List<ContactModel>> findAll() {
         log.debug("Find all contacts");
         final var contacts = this.contactService.findAll();
-        if (contacts.isEmpty()) {
-            return new ResponseEntity<>(contacts, HttpStatus.NO_CONTENT);
-        }
         return new ResponseEntity<List<ContactModel>>(contacts, HttpStatus.OK);
     }
 
