@@ -13,7 +13,7 @@ public interface CrudService<Model, Entity> {
 
     Model save(Model model);
 
-    Model update(Model model);
+    Model update(Long id, Model model);
 
     void delete(Long id);
 }

@@ -78,8 +78,8 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public ContactModel update(final ContactModel model) {
-        final var contact = findByIdFunction.apply(model.getId());
+    public ContactModel update(final Long id, final ContactModel model) {
+        final var contact = findByIdFunction.apply(id);
         this.mapper.copyProperties(contact, model);
         final var contactUpdated = this.repository.save(contact);
         log.debug("Contact updated with ID [{}]", contactUpdated.getId());
