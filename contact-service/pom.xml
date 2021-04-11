@@ -18,6 +18,7 @@
     <properties>
         <java.version>15</java.version>
         <javers.version>5.15.0</javers.version>
+        <guava.version>30.1.1-jre</guava.version>
         <lombok.version>1.18.18</lombok.version>
         <mockito-core.version>3.8.0</mockito-core.version>
         <mockito-junit-jupiter.version>3.8.0</mockito-junit-jupiter.version>
@@ -63,6 +64,11 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>${springdoc-openapi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

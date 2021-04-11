@@ -21,6 +21,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 @Transactional
@@ -48,6 +52,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public ContactModel findById(final Long id) {
+        checkArgument(nonNull(id), "Contact ID must not be null or empty.");
         final var contact = findByIdFunction.apply(id);
         return this.mapper.toModel(contact);
     }
@@ -79,6 +84,8 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public ContactModel update(final Long id, final ContactModel model) {
+        checkArgument(nonNull(id), "Contact ID must not be null or empty.");
+
         final var contact = findByIdFunction.apply(id);
         this.mapper.copyProperties(contact, model);
         final var contactUpdated = this.repository.save(contact);
@@ -88,6 +95,8 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public void delete(final Long id) {
+        checkArgument(nonNull(id), "Contact ID must not be null or empty.");
+
         final var contactOptional = this.repository.findById(id);
         final var contact = contactOptional.orElseThrow(()
                 -> new ResourceNotFoundException(String.format("Contact with ID [%d] not found.", id)));

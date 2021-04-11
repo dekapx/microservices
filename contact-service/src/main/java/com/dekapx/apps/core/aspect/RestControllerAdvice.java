@@ -21,26 +21,32 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @ControllerAdvice(annotations = RestController.class)
 public class RestControllerAdvice {
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgument(IllegalArgumentException exception) {
+        final ApiErrorResponse apiErrorResponse = apiErrorFunction.apply(exception.getMessage(), "Bad Request");
+        return new ResponseEntity<>(apiErrorResponse, BAD_REQUEST);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> resourceNotFoundException(ResourceNotFoundException exception) {
+    public ResponseEntity<ApiErrorResponse> handleNotFound(ResourceNotFoundException exception) {
         final ApiErrorResponse apiErrorResponse = apiErrorFunction.apply(exception.getMessage(), "Not Found");
         return new ResponseEntity<>(apiErrorResponse, NOT_FOUND);
     }
 
     @ExceptionHandler(NoContentException.class)
-    public ResponseEntity<ApiErrorResponse> noContentException(NoContentException exception) {
+    public ResponseEntity<ApiErrorResponse> handleNoContent(NoContentException exception) {
         final ApiErrorResponse apiErrorResponse = apiErrorFunction.apply(exception.getMessage(), "No Content");
         return new ResponseEntity<>(apiErrorResponse, NO_CONTENT);
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
-    public ResponseEntity<ApiErrorResponse> resourceAlreadyExistsException(ResourceAlreadyExistsException exception) {
+    public ResponseEntity<ApiErrorResponse> handleAlreadyExists(ResourceAlreadyExistsException exception) {
         final ApiErrorResponse apiErrorResponse = apiErrorFunction.apply(exception.getMessage(), "Conflict");
         return new ResponseEntity<ApiErrorResponse>(apiErrorResponse, CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<ApiErrorResponse>> handleValidationExceptions(MethodArgumentNotValidException exception) {
+    public ResponseEntity<List<ApiErrorResponse>> handleValidations(MethodArgumentNotValidException exception) {
         final List<ApiErrorResponse> errors = new ArrayList<>();
         exception.getBindingResult().getAllErrors().forEach((error) -> {
             errors.add(apiErrorFunction.apply(error.getDefaultMessage(), "Bad Request"));
