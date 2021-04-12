@@ -2,6 +2,8 @@ package com.dekapx.apps.contact.repository;
 
 import com.dekapx.apps.contact.domain.Contact;
 import com.dekapx.apps.contact.specification.ContactSpecification;
+import com.dekapx.apps.core.search.SearchCriteria;
+import com.dekapx.apps.core.search.SearchOperation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,7 +73,13 @@ public class ContactRepositoryITest {
     private Contact findContactBySpecification() {
         final var contact = new Contact();
         contact.setFirstName(FIRST_NAME);
-        final Specification<Contact> specification = new ContactSpecification(contact);
+        final SearchCriteria searchCriteria = SearchCriteria.builder()
+                .key("firstName")
+                .operation(SearchOperation.EQUAL)
+                .value(FIRST_NAME)
+                .build();
+        final ContactSpecification specification = new ContactSpecification();
+        specification.addSearchCriteria(searchCriteria);
         final Optional<Contact> contactOptional = this.repository.findOne(specification);
         return contactOptional.get();
     }

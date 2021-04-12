@@ -4,6 +4,8 @@ import com.dekapx.apps.contact.domain.Contact;
 import com.dekapx.apps.contact.model.ContactModel;
 import com.dekapx.apps.contact.specification.ContactSpecification;
 import com.dekapx.apps.core.exception.ResourceNotFoundException;
+import com.dekapx.apps.core.search.SearchCriteria;
+import com.dekapx.apps.core.search.SearchOperation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,9 +69,13 @@ public class ContactServiceIT {
     }
 
     private ContactModel findContactBySpecification() {
-        final Contact contact = new Contact();
-        contact.setFirstName(FIRST_NAME);
-        final Specification<Contact> specification = new ContactSpecification(contact);
+        final SearchCriteria searchCriteria = SearchCriteria.builder()
+                .key("firstName")
+                .operation(SearchOperation.EQUAL)
+                .value(FIRST_NAME)
+                .build();
+        final ContactSpecification specification = new ContactSpecification();
+        specification.addSearchCriteria(searchCriteria);
         return this.contactService.findBySpecification(specification);
     }
 

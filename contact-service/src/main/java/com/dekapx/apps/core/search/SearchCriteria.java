@@ -7,6 +7,6 @@ import lombok.Getter;
 @Builder
 public class SearchCriteria {
     private String key;
-    private String operation;
+    private SearchOperation operation;
     private Object value;
 }

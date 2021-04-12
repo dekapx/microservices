@@ -9,8 +9,9 @@ import com.dekapx.apps.core.exception.ResourceAlreadyExistsException;
 import com.dekapx.apps.core.exception.ResourceNotFoundException;
 import com.dekapx.apps.core.mapper.Mapper;
 import com.dekapx.apps.core.mapper.MapperFactory;
+import com.dekapx.apps.core.search.SearchCriteria;
+import com.dekapx.apps.core.search.SearchOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.javers.core.Javers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static com.dekapx.apps.core.search.SearchOperation.EQUAL;
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -31,14 +32,12 @@ import static java.util.Objects.nonNull;
 public class ContactServiceImpl implements ContactService {
     private MapperFactory mapperFactory;
     private ContactRepository repository;
-    private Javers javers;
     private Mapper<Contact, ContactModel> mapper;
 
     @Autowired
-    public ContactServiceImpl(final MapperFactory mapperFactory, final ContactRepository repository, final Javers javers) {
+    public ContactServiceImpl(final MapperFactory mapperFactory, final ContactRepository repository) {
         this.mapperFactory = mapperFactory;
         this.repository = repository;
-        this.javers = javers;
         this.mapper = this.mapperFactory.getMapper(Contact.class);
     }
 
@@ -73,13 +72,29 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public ContactModel save(final ContactModel model) {
+        checkForDuplicate(model);
         var contact = this.mapper.toEntity(model);
-        if (this.repository.findOne(new ContactSpecification(contact)).isPresent()) {
+        contact = this.repository.save(contact);
+        log.info("Contact created with ID [{}]", contact.getId());
+        return this.mapper.toModel(contact);
+    }
+
+    private void checkForDuplicate(final ContactModel model) {
+        final ContactSpecification specification = new ContactSpecification();
+        specification.addSearchCriteria(buildSearchCriteria("firstName", EQUAL, model.getFirstName()));
+        specification.addSearchCriteria(buildSearchCriteria("lastName", EQUAL, model.getLastName()));
+        specification.addSearchCriteria(buildSearchCriteria("email", EQUAL, model.getEmail()));
+        if (this.repository.findOne(specification).isPresent()) {
             throw new ResourceAlreadyExistsException("Contact already exists...");
         }
-        contact = this.repository.save(contact);
-        log.debug("Contact created with ID [{}]", contact.getId());
-        return this.mapper.toModel(contact);
+    }
+
+    private SearchCriteria buildSearchCriteria(final String key, final SearchOperation searchOperation, final Object value) {
+        return SearchCriteria.builder()
+                .key(key)
+                .operation(searchOperation)
+                .value(value)
+                .build();
     }
 
     @Override
@@ -89,7 +104,7 @@ public class ContactServiceImpl implements ContactService {
         final var contact = findByIdFunction.apply(id);
         this.mapper.copyProperties(contact, model);
         final var contactUpdated = this.repository.save(contact);
-        log.debug("Contact updated with ID [{}]", contactUpdated.getId());
+        log.info("Contact updated with ID [{}]", contactUpdated.getId());
         return this.mapper.toModel(contactUpdated);
     }
 
@@ -101,6 +116,6 @@ public class ContactServiceImpl implements ContactService {
         final var contact = contactOptional.orElseThrow(()
                 -> new ResourceNotFoundException(String.format("Contact with ID [%d] not found.", id)));
         this.repository.delete(contact);
-        log.debug("Contact with ID [{}}] is deleted successfully... ", id);
+        log.info("Contact with ID [{}}] is deleted successfully... ", id);
     }
 }

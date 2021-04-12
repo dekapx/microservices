@@ -42,7 +42,7 @@ public class ContactController {
     @GetMapping(value = "/contact/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ContactModel> findContactById(@PathVariable Long id) {
-        log.debug("Find Contact for ID [{}]", id);
+        log.info("Find Contact for ID [{}]", id);
         final ContactModel contact = this.contactService.findById(id);
         return new ResponseEntity<>(contact, HttpStatus.OK);
     }
@@ -57,7 +57,7 @@ public class ContactController {
     @GetMapping(value = "/contacts",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ContactModel>> findAll() {
-        log.debug("Find all contacts");
+        log.info("Find all contacts");
         final List<ContactModel> contacts = this.contactService.findAll();
         return new ResponseEntity<>(contacts, HttpStatus.OK);
     }
@@ -72,7 +72,7 @@ public class ContactController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ContactModel> create(@Valid @RequestBody ContactModel contactModel) {
-        log.debug("Create new contact...");
+        log.info("Create new contact...");
         return new ResponseEntity<ContactModel>(this.contactService.save(contactModel), HttpStatus.OK);
     }
 
@@ -86,7 +86,7 @@ public class ContactController {
              consumes = MediaType.APPLICATION_JSON_VALUE,
              produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody ContactModel contactModel) {
-        log.debug("Update contact for ID [{}]...", id);
+        log.info("Update contact for ID [{}]...", id);
         this.contactService.update(id, contactModel);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -97,7 +97,7 @@ public class ContactController {
             @ApiResponse(responseCode = "404", description = "Contact not found")})
     @DeleteMapping(path = "/contacts/{contactId}")
     public ResponseEntity<Void> deleteContactById(@PathVariable Long id) {
-        log.debug("Delete contact for ID [{}]...", id);
+        log.info("Delete contact for ID [{}]...", id);
         this.contactService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
