@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.4.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
     <groupId>com.dekapx.apps</groupId>
@@ -20,8 +20,8 @@
         <javers.version>5.15.0</javers.version>
         <guava.version>30.1.1-jre</guava.version>
         <lombok.version>1.18.18</lombok.version>
-        <mockito-core.version>3.8.0</mockito-core.version>
-        <mockito-junit-jupiter.version>3.8.0</mockito-junit-jupiter.version>
+        <mockito-core.version>3.9.0</mockito-core.version>
+        <mockito-junit-jupiter.version>3.9.0</mockito-junit-jupiter.version>
         <assertj.version>3.19.0</assertj.version>
         <springdoc-openapi.version>1.5.6</springdoc-openapi.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -83,6 +83,12 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <version>${mockito-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
             <version>${mockito-core.version}</version>
             <scope>test</scope>
         </dependency>
