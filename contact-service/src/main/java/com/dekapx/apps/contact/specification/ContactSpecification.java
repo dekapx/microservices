@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContactSpecification implements Specification<Contact> {
-    private List<SearchCriteria> searchCriterias;
+    private final List<SearchCriteria> searchCriterias;
 
     public ContactSpecification() {
         this.searchCriterias = new ArrayList<>();
@@ -27,11 +27,11 @@ public class ContactSpecification implements Specification<Contact> {
     public Predicate toPredicate(final Root<Contact> root, final CriteriaQuery<?> query, final CriteriaBuilder builder) {
         final List<Predicate> predicates = new ArrayList<>();
 
-        for (SearchCriteria searchCriteria : searchCriterias) {
+        searchCriterias.forEach(searchCriteria -> {
             if (searchCriteria.getOperation().equals(SearchOperation.EQUAL)) {
                 predicates.add(builder.equal(root.get(searchCriteria.getKey()), searchCriteria.getValue().toString()));
             }
-        }
+        });
 
         return builder.and(predicates.toArray(new Predicate[0]));
     }

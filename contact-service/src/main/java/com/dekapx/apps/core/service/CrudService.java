@@ -4,7 +4,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
-public interface CrudService<Model, Entity> {
+public interface CrudService<Entity, Model> {
     List<Model> findAll();
 
     Model findById(Long id);
