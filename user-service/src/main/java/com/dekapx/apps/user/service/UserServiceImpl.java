@@ -1,6 +1,6 @@
 package com.dekapx.apps.user.service;
 
-import com.dekapx.apps.user.common.model.UserDto;
+import com.dekapx.apps.user.common.model.UserModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +10,8 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     @Override
-    public List<UserDto> getUsers() {
-        return List.of(UserDto.builder()
+    public List<UserModel> getUsers() {
+        return List.of(UserModel.builder()
                 .firstName("De")
                 .lastName("Kapx")
                 .username("dekapx")
@@ -20,8 +20,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUser(final Long id) {
-        return UserDto.builder()
+    public UserModel getUser(final Long id) {
+        return UserModel.builder()
                 .firstName("Dummy")
                 .lastName("User")
                 .username("dummyuser")
@@ -30,12 +30,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto create(final UserDto userDto) {
-        return userDto;
+    public UserModel create(final UserModel userModel) {
+        return userModel;
     }
 
     @Override
-    public UserDto update(UserDto userDto) {
-        return userDto;
+    public UserModel update(UserModel userModel) {
+        return userModel;
     }
 }

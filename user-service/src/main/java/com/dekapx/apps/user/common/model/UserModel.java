@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 
 @Value
 @Builder
-public class UserDto {
+public class UserModel {
     @NotNull(message = "First Name cannot be null")
     @Size(min = 2, max = 20, message = "First Name must be between 6 and 20 characters")
     private String firstName;

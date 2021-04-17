@@ -1,5 +1,6 @@
 package com.dekapx.apps.contact.model;
 
+import com.dekapx.apps.core.annotation.Email;
 import com.dekapx.apps.core.model.BaseModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -29,8 +30,8 @@ public class ContactModel extends BaseModel {
     @Size(min = 2, max = 20, message = "Last Name must be between 2 and 20 characters")
     private String lastName;
 
+    @Email
     @Schema(description = "Email address of the contact.", example = "someone@domain.com", required = true)
-    @Pattern(regexp = EMAIL_REGEX, message = "Provide a valid email")
     private String email;
 
     @Schema(description = "Phone number of the contact.", example = "+353 (111) 222 3456", required = true)
