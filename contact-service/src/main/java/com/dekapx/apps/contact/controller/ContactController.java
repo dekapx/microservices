@@ -67,7 +67,8 @@ public class ContactController {
             @ApiResponse(responseCode = "201", description = "New Contact created",
                     content = @Content(schema = @Schema(implementation = ContactModel.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "409", description = "Contact already exists")})
+            @ApiResponse(responseCode = "409", description = "Contact already exists"),
+            @ApiResponse(responseCode = "405", description = "Validation exception")})
     @PostMapping(value = "/contact/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -79,26 +80,25 @@ public class ContactController {
     @Operation(summary = "Update an existing contact", description = "", tags = {"contact"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "400", description = "Invalid ID supplied"),
-            @ApiResponse(responseCode = "404", description = "Contact not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "404", description = "Contact with ID [x] not found."),
             @ApiResponse(responseCode = "405", description = "Validation exception")})
-    @PutMapping(value = "/contact/update",
+    @PutMapping(value = "/contact/update/{id}",
              consumes = MediaType.APPLICATION_JSON_VALUE,
              produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody ContactModel contactModel) {
+    public ResponseEntity<ContactModel> update(@PathVariable Long id, @Valid @RequestBody ContactModel contactModel) {
         log.info("Update contact for ID [{}]...", id);
-        this.contactService.update(id, contactModel);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(this.contactService.update(id, contactModel), HttpStatus.OK);
     }
 
     @Operation(summary = "Deletes a contact", description = "", tags = {"contact"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "successful operation"),
             @ApiResponse(responseCode = "404", description = "Contact not found")})
-    @DeleteMapping(path = "/contacts/{contactId}")
-    public ResponseEntity<Void> deleteContactById(@PathVariable Long id) {
+    @DeleteMapping(path = "/contacts/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         log.info("Delete contact for ID [{}]...", id);
         this.contactService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(String.format("Contact id [%s] removed successfully...", id), HttpStatus.OK);
     }
 }
