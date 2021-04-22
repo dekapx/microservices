@@ -13,6 +13,9 @@ import com.dekapx.apps.core.search.SearchCriteria;
 import com.dekapx.apps.core.search.SearchOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static com.dekapx.apps.core.common.CommonConstants.CONTACT_CACHE_NAME;
 import static com.dekapx.apps.core.search.SearchOperation.EQUAL;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
@@ -50,6 +54,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    @Cacheable(value = CONTACT_CACHE_NAME)
     public ContactModel findById(final Long id) {
         checkArgument(nonNull(id), "Contact ID must not be null or empty.");
         final var contact = findByIdFunction.apply(id);
@@ -98,6 +103,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    @CachePut(value = CONTACT_CACHE_NAME, key = "#model.id")
     public ContactModel update(final Long id, final ContactModel model) {
         checkArgument(nonNull(id), "Contact ID must not be null or empty.");
 
@@ -109,6 +115,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    @CacheEvict(value = CONTACT_CACHE_NAME, key = "id")
     public void delete(final Long id) {
         checkArgument(nonNull(id), "Contact ID must not be null or empty.");
 

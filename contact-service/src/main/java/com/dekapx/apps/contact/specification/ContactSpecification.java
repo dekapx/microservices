@@ -29,7 +29,7 @@ public class ContactSpecification implements Specification<Contact> {
 
         searchCriterias.forEach(searchCriteria -> {
             if (searchCriteria.getOperation().equals(SearchOperation.EQUAL)) {
-                predicates.add(builder.equal(root.get(searchCriteria.getKey()), searchCriteria.getValue().toString()));
+                predicates.add(builder.equal(root.get(searchCriteria.getKey()), searchCriteria.getValue()));
             }
         });
 
