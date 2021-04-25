@@ -11,12 +11,19 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Override
     public List<UserModel> getUsers() {
-        return List.of(UserModel.builder()
-                .firstName("De")
-                .lastName("Kapx")
-                .username("dekapx")
-                .email("dekapx@google.com")
-                .build());
+        return List.of(
+                UserModel.builder()
+                        .firstName("De")
+                        .lastName("Kapx")
+                        .username("dekapx")
+                        .email("dekapx@google.com")
+                        .build(),
+                UserModel.builder()
+                        .firstName("Dummy")
+                        .lastName("User")
+                        .username("dummyuser")
+                        .email("dummy.user@google.com")
+                        .build());
     }
 
     @Override

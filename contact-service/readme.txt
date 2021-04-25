@@ -1,4 +1,4 @@
-http://localhost:9090/swagger-ui.html
+http://localhost:9092/swagger-ui.html
 --------------------------------------------------
 https://attacomsian.com/blog/spring-data-jpa-specifications
 https://www.baeldung.com/rest-api-search-language-spring-data-specifications
