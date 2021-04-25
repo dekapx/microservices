@@ -11,6 +11,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Override
     public List<UserModel> getUsers() {
+        log.info("Return all the users");
         return List.of(
                 UserModel.builder()
                         .firstName("De")
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel getUser(final Long id) {
+        log.info("Return the user for ID [{}]", id);
         return UserModel.builder()
                 .firstName("Dummy")
                 .lastName("User")
