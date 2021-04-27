@@ -10,6 +10,11 @@ spring:
           uri: lb://USER-SERVICE
           predicates:
             - Path=/api/users/**
+#          filters:
+#            - name: Hystrix
+#              args:
+#                name: USER-SERVICE
+#                fallbackuri: forward:/userServiceFallBack
 
 eureka:
   client:
@@ -20,3 +25,17 @@ eureka:
   instance:
     preferIpAddress: true
 
+hystrix:
+  command:
+    fallbackcmd:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
