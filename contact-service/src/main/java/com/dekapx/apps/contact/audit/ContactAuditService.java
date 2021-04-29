@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Service
+@Service("contactAuditService")
 public class ContactAuditService implements AuditService<Contact> {
     private final ContactRepository repository;
     private final Javers javers;

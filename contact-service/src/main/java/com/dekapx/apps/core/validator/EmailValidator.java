@@ -12,8 +12,8 @@ import static com.dekapx.apps.core.common.CommonConstants.EMAIL_REGEX;
 public class EmailValidator implements ConstraintValidator<Email, String> {
     @Override
     public boolean isValid(final String email, final ConstraintValidatorContext context) {
-        final Pattern pattern = Pattern.compile(EMAIL_REGEX);
-        final Matcher matcher = pattern.matcher(email);
+        final var pattern = Pattern.compile(EMAIL_REGEX);
+        final var matcher = pattern.matcher(email);
         return matcher.matches();
     }
 }
