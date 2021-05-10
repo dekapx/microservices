@@ -1,5 +1,6 @@
 package com.dekapx.apps.core.audit;
 
+import com.dekapx.apps.contact.model.AuditModel;
 import org.javers.core.Changes;
 import org.javers.core.metamodel.object.CdoSnapshot;
 import org.javers.shadow.Shadow;
@@ -14,4 +15,6 @@ public interface AuditService<E> {
     Changes findChanges(Long id);
 
     Changes findChanges();
+
+    List<AuditModel> findAuditModels(Long id);
 }

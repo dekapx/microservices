@@ -1,20 +1,26 @@
 package com.dekapx.apps.contact.audit;
 
 import com.dekapx.apps.contact.domain.Contact;
+import com.dekapx.apps.contact.model.AuditModel;
 import com.dekapx.apps.contact.repository.ContactRepository;
 import com.dekapx.apps.core.audit.AuditService;
 import com.dekapx.apps.core.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.javers.core.Changes;
 import org.javers.core.Javers;
+import org.javers.core.commit.CommitMetadata;
+import org.javers.core.diff.Change;
+import org.javers.core.diff.changetype.ValueChange;
 import org.javers.core.metamodel.object.CdoSnapshot;
 import org.javers.repository.jql.QueryBuilder;
 import org.javers.shadow.Shadow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service("contactAuditService")
@@ -64,5 +70,44 @@ public class ContactAuditService implements AuditService<Contact> {
                         .build());
         log.info(changes.prettyPrint());
         return changes;
+    }
+
+    @Override
+    public List<AuditModel> findAuditModels(Long id) {
+        final Changes changes = findChanges(id);
+        return toAuditModels(changes);
+    }
+
+    private List<AuditModel> toAuditModels(final Changes changes) {
+        return changes.stream()
+                .map(change -> toAuditModel(change))
+                .collect(Collectors.toList());
+    }
+
+    private AuditModel toAuditModel(final Change change) {
+        final ValueChange valueChange = (ValueChange) change;
+        return AuditModel.builder()
+                .propertyName(valueChange.getPropertyName())
+                .oldValue(String.valueOf(valueChange.getLeft()))
+                .newValue(String.valueOf(valueChange.getRight()))
+                .modifiedBy(getModifiedBy(valueChange.getCommitMetadata()))
+                .modifiedDate(getModifiedDate(valueChange.getCommitMetadata()))
+                .build();
+    }
+
+    private String getModifiedBy(final Optional<CommitMetadata> commitMetadataOptional) {
+        String modifiedDate = "";
+        if (commitMetadataOptional.isPresent()) {
+            modifiedDate = commitMetadataOptional.get().getCommitDate().toString();
+        }
+        return modifiedDate;
+    }
+
+    private String getModifiedDate(final Optional<CommitMetadata> commitMetadataOptional) {
+        String modifiedBy = "";
+        if (commitMetadataOptional.isPresent()) {
+            modifiedBy = commitMetadataOptional.get().getAuthor();
+        }
+        return modifiedBy;
     }
 }
