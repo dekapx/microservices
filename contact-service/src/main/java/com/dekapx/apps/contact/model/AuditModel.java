@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuditModel {
-    @Schema(description = "Name of the Audit property.")
+    @Schema(description = "Audit property name.")
     private String propertyName;
 
     @Schema(description = "Audit property value before modification.")
@@ -23,6 +23,6 @@ public class AuditModel {
     @Schema(description = " Audit property modified by.")
     private String modifiedBy;
 
-    @Schema(description = "Date Audit property modified.")
+    @Schema(description = "Audit property modified date.")
     private String modifiedDate;
 }
