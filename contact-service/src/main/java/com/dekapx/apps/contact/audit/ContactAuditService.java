@@ -80,12 +80,11 @@ public class ContactAuditService implements AuditService<Contact> {
 
     private List<AuditModel> toAuditModels(final Changes changes) {
         return changes.stream()
-                .map(change -> toAuditModel(change))
+                .map(change -> toAuditModel((ValueChange)change))
                 .collect(Collectors.toList());
     }
 
-    private AuditModel toAuditModel(final Change change) {
-        final ValueChange valueChange = (ValueChange) change;
+    private AuditModel toAuditModel(final ValueChange valueChange) {
         return AuditModel.builder()
                 .propertyName(valueChange.getPropertyName())
                 .oldValue(String.valueOf(valueChange.getLeft()))
