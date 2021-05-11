@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -95,18 +96,18 @@ public class ContactAuditService implements AuditService<Contact> {
     }
 
     private String getModifiedBy(final Optional<CommitMetadata> commitMetadataOptional) {
-        String modifiedDate = "";
-        if (commitMetadataOptional.isPresent()) {
-            modifiedDate = commitMetadataOptional.get().getCommitDate().toString();
-        }
-        return modifiedDate;
-    }
-
-    private String getModifiedDate(final Optional<CommitMetadata> commitMetadataOptional) {
         String modifiedBy = "";
         if (commitMetadataOptional.isPresent()) {
             modifiedBy = commitMetadataOptional.get().getAuthor();
         }
         return modifiedBy;
+    }
+
+    private String getModifiedDate(final Optional<CommitMetadata> commitMetadataOptional) {
+        String modifiedDate = "";
+        if (commitMetadataOptional.isPresent()) {
+            modifiedDate = commitMetadataOptional.get().getCommitDate().toString();
+        }
+        return modifiedDate;
     }
 }

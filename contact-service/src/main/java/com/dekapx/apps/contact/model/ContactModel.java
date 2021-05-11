@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import static com.dekapx.apps.core.common.CommonConstants.EMAIL_REGEX;
 import static com.dekapx.apps.core.common.CommonConstants.PHONE_REGEX;
 
 @Getter
