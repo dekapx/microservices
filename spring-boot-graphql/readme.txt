@@ -25,3 +25,16 @@ GraphQL:
     }
 }
 -------------------------------------------------------------------------------
+URL: http://localhost:9091/graphql
+GraphQL:
+{
+    findContact (id: 104) {
+        firstName
+        lastName
+        email
+        phone
+        status {
+            statusValue
+        }
+    }
+}
