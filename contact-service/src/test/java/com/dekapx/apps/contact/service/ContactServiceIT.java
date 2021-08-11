@@ -1,6 +1,5 @@
 package com.dekapx.apps.contact.service;
 
-import com.dekapx.apps.contact.domain.Contact;
 import com.dekapx.apps.contact.model.ContactModel;
 import com.dekapx.apps.contact.specification.ContactSpecification;
 import com.dekapx.apps.core.exception.ResourceNotFoundException;
@@ -10,10 +9,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.domain.Specification;
 
 import java.util.function.Supplier;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -47,6 +46,14 @@ public class ContactServiceIT {
                 () -> assertEquals(EMAIL, contact.getEmail()),
                 () -> assertEquals(PHONE, contact.getPhone())
         );
+
+        assertThat(contact).isNotNull()
+                .satisfies(c -> {
+                    assertThat(c.getFirstName()).isEqualTo(FIRST_NAME);
+                    assertThat(c.getLastName()).isEqualTo(LAST_NAME);
+                    assertThat(c.getEmail()).isEqualTo(EMAIL);
+                    assertThat(c.getPhone()).isEqualTo(PHONE);
+                });
     }
 
     private void updateAndVerify() {
