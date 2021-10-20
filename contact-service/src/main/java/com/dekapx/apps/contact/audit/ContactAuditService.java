@@ -12,6 +12,7 @@ import org.javers.core.commit.CommitMetadata;
 import org.javers.core.diff.Change;
 import org.javers.core.diff.changetype.ValueChange;
 import org.javers.core.metamodel.object.CdoSnapshot;
+import org.javers.repository.jql.JqlQuery;
 import org.javers.repository.jql.QueryBuilder;
 import org.javers.shadow.Shadow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,9 @@ public class ContactAuditService implements AuditService<Contact> {
         final Optional<Contact> optional = this.repository.findById(id);
         final Contact contact = optional.orElseThrow(()
                 -> new ResourceNotFoundException(String.format("Contact with ID [{}] not found...", id)));
-        return this.javers.findSnapshots(QueryBuilder.byInstance(contact).build());
+
+        JqlQuery jqlQuery = QueryBuilder.byInstance(contact).build();
+        return this.javers.findSnapshots(jqlQuery);
     }
 
     @Override
